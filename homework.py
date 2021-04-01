@@ -112,7 +112,8 @@ class CaloriesCalculator(Calculator):
         ostatok = self.limit - self.get_today_stats()
 
         if ostatok > 0:
-            return f'Сегодня можно съесть что-нибудь ещё, но с общей калорийностью не более {ostatok} кКал'
+            return (f'Сегодня можно съесть что-нибудь ещё, но с общей '
+                    f'калорийностью не более {ostatok} кКал')
 
         else:
             return 'Хватит есть!'
