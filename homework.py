@@ -58,10 +58,12 @@ class Calculator:
 class CashCalculator(Calculator):
     # Сurrency это курс в котором хочет его увидеть пользователь,
     # доступные значения - 'rub', 'eur', 'usd'.
+    USD_RATE = 75.53
+    EURO_RATE = 88.58
+
+
     def get_today_cash_remained(self, currency):
         # Тут курс евро и доллара взятый с - https://yandex.ru :)
-        EURO_RATE = 88.58
-        USD_RATE = 75.53
 
         if currency == 'rub':
             # Тут отнимаем от лимита все что было потрачено за сегодня
@@ -74,7 +76,7 @@ class CashCalculator(Calculator):
         elif currency == 'usd':
             # Тут отнимаем от лимита все что было потрачено за сегодня,
             # и приводим к евро
-            ostatok = (self.limit - self.get_today_stats()) / USD_RATE
+            ostatok = (self.limit - self.get_today_stats()) / self.USD_RATE
 
             # Здесь из вот этого - 7.3993949343 делаем это - 7.34, обрезаем)
             ostatok = int(ostatok * 100) / 100
@@ -84,7 +86,7 @@ class CashCalculator(Calculator):
         elif currency == 'eur':
             # Тут отнимаем от лимита все что было потрачено за сегодня,
             # и приводим к долларам
-            ostatok = (self.limit - self.get_today_stats()) / EURO_RATE
+            ostatok = (self.limit - self.get_today_stats()) / self.EURO_RATE
             ostatok = int(ostatok * 100) / 100
 
             currency = 'Euro'
