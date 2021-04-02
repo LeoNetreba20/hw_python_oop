@@ -59,9 +59,11 @@ class CashCalculator(Calculator):
     # Сurrency это курс в котором хочет его увидеть пользователь,
     # доступные значения - 'rub', 'eur', 'usd'.
     def get_today_cash_remained(self, currency):
+        ostatok = self.limit - self.get_today_stats()
+
         if currency == 'rub':
             # Тут отнимаем от лимита все что было потрачено за сегодня
-            ostatok = self.limit - self.get_today_stats()
+            result = ostatok
 
             # Это переменная лишь нужна, что бы потом в сообщение выводить
             # правильно - N руб/USD/Euro
@@ -69,37 +71,35 @@ class CashCalculator(Calculator):
 
         elif currency == 'usd':
             # Тут отнимаем от лимита все что было потрачено за сегодня,
-            # и приводим к долларам
-            ostatok = (self.limit - self.get_today_stats()) / self.USD_RATE
+            # и приводим к евро
+            result = ostatok / self.USD_RATE
 
             # Здесь из вот этого - 7.3993949343 делаем это - 7.34, обрезаем)
-            ostatok = int(ostatok * 100) / 100
+            result = int(result * 100) / 100
 
             currency = 'USD'
 
         elif currency == 'eur':
             # Тут отнимаем от лимита все что было потрачено за сегодня,
             # и приводим к евро
-            ostatok = (self.limit - self.get_today_stats()) / self.EURO_RATE
-
-            # Здесь из вот этого - 7.3993949343 делаем это - 7.34, обрезаем)
-            ostatok = int(ostatok * 100) / 100
+            result = ostatok / self.USD_RATE
+            result = int(result * 100) / 100
 
             currency = 'Euro'
 
         # Если осталось что-то больше 0
-        if ostatok > 0:
+        if result > 0:
             # Тут выводим остаток уже в определённом курсе и
             # currency = переменная в которою выше положили названия курса
-            return f'На сегодня осталось {ostatok} {currency}'
+            return f'На сегодня осталось {result} {currency}'
 
         # Если остаток  равен 0
-        elif ostatok == 0:
+        elif result == 0:
             return 'Денег нет, держись'
 
         # И все остальное, то есть если ушло в минус
         else:
-            return f'Денег нет, держись: твой долг - {abs(ostatok)} {currency}'
+            return f'Денег нет, держись: твой долг - {abs(result)} {currency}'
 
 
 # Тут о том сколько нужна еще скушать или хватит есть)
