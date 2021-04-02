@@ -56,15 +56,13 @@ class Calculator:
 
 # Тут говорится о балансе, что осталось или наоборот
 class CashCalculator(Calculator):
-    # Сurrency это курс в котором хочет его увидеть пользователь,
-    # доступные значения - 'rub', 'eur', 'usd'.
+    # Тут курс евро и доллара взятый с - https://yandex.ru :)
     USD_RATE = 75.53
     EURO_RATE = 88.58
 
-
+    # Сurrency это курс в котором хочет его увидеть пользователь,
+    # доступные значения - 'rub', 'eur', 'usd'.
     def get_today_cash_remained(self, currency):
-        # Тут курс евро и доллара взятый с - https://yandex.ru :)
-
         if currency == 'rub':
             # Тут отнимаем от лимита все что было потрачено за сегодня
             ostatok = self.limit - self.get_today_stats()
