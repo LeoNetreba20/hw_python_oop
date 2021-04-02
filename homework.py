@@ -69,7 +69,7 @@ class CashCalculator(Calculator):
 
         elif currency == 'usd':
             # Тут отнимаем от лимита все что было потрачено за сегодня,
-            # и приводим к евро
+            # и приводим к долларам
             ostatok = (self.limit - self.get_today_stats()) / self.USD_RATE
 
             # Здесь из вот этого - 7.3993949343 делаем это - 7.34, обрезаем)
@@ -79,8 +79,10 @@ class CashCalculator(Calculator):
 
         elif currency == 'eur':
             # Тут отнимаем от лимита все что было потрачено за сегодня,
-            # и приводим к долларам
+            # и приводим к евро
             ostatok = (self.limit - self.get_today_stats()) / self.EURO_RATE
+
+            # Здесь из вот этого - 7.3993949343 делаем это - 7.34, обрезаем)
             ostatok = int(ostatok * 100) / 100
 
             currency = 'Euro'
@@ -134,20 +136,3 @@ class Record:
         # Тут если указана дата, приводим её к нужному формату
         else:
             self.date = dt.datetime.strptime(date, self.date_format).date()
-
-
-cash_calculator = CashCalculator(999)
-
-# дата в параметрах не указана,
-# так что по умолчанию к записи
-# должна автоматически добавиться сегодняшняя дата
-cash_calculator.add_record(Record(amount=333, comment='кофе'))
-# и к этой записи тоже дата должна добавиться автоматически
-cash_calculator.add_record(Record(amount=333, comment='Серёге за обед'))
-# а тут пользователь указал дату, сохраняем её
-cash_calculator.add_record(Record(amount=331,
-                                  comment='бар в Танин др'))
-
-print(cash_calculator.get_today_cash_remained('eur'))
-# должно напечататься
-# На сегодня осталось 555 руб
