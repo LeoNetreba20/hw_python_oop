@@ -40,16 +40,12 @@ class Calculator:
     # только все количество затрат или калорий за неделю
     def get_week_stats(self):
         # Здесь охватываем период за неделю
-        during_week = dt.datetime.now() - dt.timedelta(days=7)
         total = 0
+        last_week = dt.date.today() - dt.timedelta(days=7)
 
-        # Тут все то же самое как в том методе только еще записываем даты
-        # которые на этой неделе
         for record in self.records:
-            if record.date > during_week.date():
-                total = total + record.amount
-            elif record.date == dt.datetime.now().date():
-                total = total + record.amount
+            if dt.date.today() >= record.date > last_week:
+                total += record.amount
 
         return total
 
@@ -138,3 +134,20 @@ class Record:
         # Тут если указана дата, приводим её к нужному формату
         else:
             self.date = dt.datetime.strptime(date, self.date_format).date()
+
+
+cash_calculator = CashCalculator(999)
+
+# дата в параметрах не указана,
+# так что по умолчанию к записи
+# должна автоматически добавиться сегодняшняя дата
+cash_calculator.add_record(Record(amount=333, comment='кофе'))
+# и к этой записи тоже дата должна добавиться автоматически
+cash_calculator.add_record(Record(amount=333, comment='Серёге за обед'))
+# а тут пользователь указал дату, сохраняем её
+cash_calculator.add_record(Record(amount=331,
+                                  comment='бар в Танин др'))
+
+print(cash_calculator.get_today_cash_remained('eur'))
+# должно напечататься
+# На сегодня осталось 555 руб
