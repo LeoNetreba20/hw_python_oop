@@ -53,38 +53,49 @@ class Calculator:
 # Тут говорится о балансе, что осталось или наоборот
 class CashCalculator(Calculator):
     # Тут курс евро и доллара взятый с - https://yandex.ru :)
-    USD_RATE = 75.53
-    EURO_RATE = 88.58
-
-    CUP_DICT = {'usd': (USD_RATE, 'USD'),
-                'eur': (EURO_RATE, 'Euro'),
-                'rub': (1, 'руб')}
+    RUB_RATE = 1.0
+    USD_RATE = 77.22
+    EURO_RATE = 91.74
 
     # Сurrency это курс в котором хочет его увидеть пользователь,
     # доступные значения - 'rub', 'eur', 'usd'.
     def get_today_cash_remained(self, currency):
-        result = self.limit - self.get_today_stats()
-        result = result / self.CUP_DICT[currency][0]
-        result = int(result * 100) / 100
-        currency_name = self.CUP_DICT[currency][1]
+        # Отнимаем от всего лимита потраченное за день
+        ostatok = self.limit - self.get_today_stats()
 
-        if currency == 'rub':
+        courses = {
+            'rub': ('руб', self.RUB_RATE),
+            'usd': ('USD', self.USD_RATE),
+            'eur': ('Euro', self.EURO_RATE)
+        }
+
+        # Здесь приводи его к вибронному курсу
+        result = ostatok / courses[currency][1]
+
+        # И переделываем из такого 3,293921039 в эта 3,92 - обрезаем :)
+        result = round(result, 2)
+
+        # Если остаток равняется 0,
+        # приводить его в полноценное число - 555.0 = 555
+        if (result - int(result)) == 0.0:
             result = int(result)
 
-        # Если осталось что-то больше 0
+        # Сюда ложем названия курса
+        course_name = courses[currency][0]
+
+        # Если осталось больше 0
         if result > 0:
-            # Тут выводим остаток уже в определённом курсе и
-            # currency = переменная в которою выше положили названия курса
-            return f'На сегодня осталось {result} {currency_name}'
+            return f'На сегодня осталось {result} {course_name}'
 
-        # Если остаток равен 0
-        elif result == 0:
-            return 'Денег нет, держись'
+        # Если превышен лимит
+        elif result < 0:
+            # Функция abs убирает минусы с отрицательных чисел
+            return ('Денег нет, держись: '
+                    f'твой долг - {abs(result)} {course_name}')
 
-        # И все остальное, то есть если ушло в минус
+        # И если равен 0
         else:
-            return (f'Денег нет, держись: '
-                    f'твой долг - {abs(result)} {currency_name}')
+            return 'Денег нет, держись'
 
 
 # Тут о том сколько нужна еще скушать или хватит есть)
